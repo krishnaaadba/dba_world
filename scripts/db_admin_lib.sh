@@ -58,3 +58,46 @@ show_slave_status() {
         return 1
     fi
 }
+
+
+stop_slave() {
+    local host=$1
+    local thread=$2
+    thread=`echo $thread | tr '[:lower:]' '[:upper:]'`
+    local sql="STOP SLAVE"
+
+    [[ -z $host ]] && echo "Error - Hostname of the slave is required." && return 1
+    if [[ ! -z $thread ]];then
+        [[ $thread != "IO" || $thread != 'SQL' ]] && echo "Only one of IO/SQL is permitted." && return 1
+        sql="$sql ${thread}_THREAD"
+    fi
+
+    $MYDB -h$host -e"$sql"
+    ret_val=$?
+    if [[ $ret_val -eq 0 ]];then
+        echo "Slave stopped"
+    else
+        echo "Failed to stop slave"
+    fi
+}
+
+start_slave() {
+    local host=$1
+    local thread=$2
+    thread=`echo $thread | tr '[:lower:]' '[:upper:]'`
+    local sql="START SLAVE"
+
+    [[ -z $host ]] && echo "Error - Hostname of the slave is required." && return 1
+    if [[ ! -z $thread ]];then
+        [[ $thread != "IO" || $thread != 'SQL' ]] && echo "Only one of IO/SQL is permitted." && return 1
+        sql="$sql ${thread}_THREAD"
+    fi
+
+    $MYDB -h$host -e"$sql"
+    ret_val=$?
+    if [[ $ret_val -eq 0 ]];then
+        echo "Slave started"
+    else
+        echo "Failed to start slave"
+    fi
+}
