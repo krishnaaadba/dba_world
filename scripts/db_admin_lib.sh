@@ -2,7 +2,7 @@
 #
 # Author: Vamsi krishna
 # Desc  : This is a library of functions for mysql administration
-
+#         source this file in you home ~/.bashrc file
 
 # A hidden config file [~/.my.cfg] with login credentials is assumed to be present
 source ~/.my.cfg
